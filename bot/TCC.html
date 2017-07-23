@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="utf-8">
+	<title>TCC</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="./TCC.css">
+</head>
+<body class="container">
+	<header class="text-center">
+		<h3>Classificação dos políticos</h3>
+	</header>
+
+	<nav>
+		<h4 id="nomes">Políticos</h4>
+		<input type="text">
+
+		<dl>
+			<dt>Governadores</dt>
+			<dd>Renan Filho</dd>
+			<dd>Luiz Fernano Pezão</dd>
+			<dd>Fernando Pimentel</dd>
+			<dd>Tião Viana</dd>
+			<dd>Beto Richa</dd>
+
+			<dt>Senadores</dt>
+			<dd>Lindberg Farias</dd>
+			<dd>Jorge Viana</dd>
+			<dd>Marta Suplicy</dd>
+			<dd>Lídice da Mata</dd>
+
+			<dt>Deputados</dt>
+			<dd>Marco Maia</dd>
+			<dd>Andres Sanchez</dd>
+			<dd>Lúcio Viena de Lima</dd>
+			<dd>José Carlos Aleluia</dd>
+			<dd>Paes Landim</dd>
+		</dl>
+	</nav>
+
+	<main class="text-center">
+	</main>
+
+	<nav id="nav-termos">
+		<h4 id="termos">Termos</h4>
+
+		<dl>
+			<dd>4501 roubo</dd>
+			<dd>3598 estelionato</dd>
+			<dd>2547 compra</dd>
+			<dd>1457 justiça</dd>
+			<dd>1254 vanguarda</dd>
+			<dd>996 suíça</dd>
+			<dd>888 pobres</dd>
+			<dd>4501 roubo</dd>
+			<dd>3598 estelionato</dd>
+			<dd>2547 compra</dd>
+			<dd>1457 justiça</dd>
+			<dd>1254 vanguarda</dd>
+			<dd>996 suíça</dd>
+			<dd>888 pobres</dd>
+			<dd>4501 roubo</dd>
+			<dd>3598 estelionato</dd>
+			<dd>2547 compra</dd>
+			<dd>1457 justiça</dd>
+			<dd>1254 vanguarda</dd>
+			<dd>996 suíça</dd>
+			<dd>888 pobres</dd>
+		</dl>
+	</nav>
+
+	<script type="text/javascript">
+		var el_ultimo_click = null;
+
+		function nomeClick(ev) {
+			if (el_ultimo_click) {
+				el_ultimo_click.classList.remove('politico-selecinado');
+			}
+
+			ev.target.classList.add('politico-selecinado');
+
+			el_ultimo_click = ev.target;
+		}
+
+		document.querySelectorAll('nav dd').forEach(function(el, i) {
+		  el.onclick = nomeClick;
+		});
+	</script>
+</body>
+</html>

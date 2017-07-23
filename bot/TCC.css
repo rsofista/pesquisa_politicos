@@ -1,0 +1,89 @@
+header {
+	background-color: #ebc89f;
+}
+
+header > h3 {
+	padding-bottom: 10px;
+	padding-top: 10px;
+	border: 1px solid black;
+}
+
+nav {
+	width: 200px;
+	border: 1px solid black;
+	border-bottom: 0px;
+	border-top: 0px;
+	padding: 1px 5px 0px 5px;
+	margin-left: 15px;
+	display: inline-block;
+	position: relative;
+	top: -10px
+}
+
+main {
+	position: absolute;
+	margin-left: 220px;
+	display: inline-block;
+}
+
+dt {
+	background-color: #edaf98;
+	border: 1px solid black;
+	left: -10px;
+	position: relative;
+	padding-left: 2px;
+}
+
+dt {
+	padding-left: 3px;
+}
+
+dt {
+	padding-left: 2px;
+}
+
+dl {
+	width: 210px;
+}
+
+#nomes, #termos {
+	border: 1px solid black;
+	left: -15px;
+	position: relative;
+	background-color: white;
+	width: 220px;
+	padding: 7px;
+}
+
+#nomes {
+	border-right: none;
+}
+
+#termos {
+	border-left: none;
+}
+
+#nav-termos {
+	float: right;
+	right: 15px;
+}
+
+.politico-selecinado {
+	border: 1px solid black;
+	background-color: white;
+	border-left: none;
+	border-right: none;
+	left: -6px;
+	position: relative;
+	padding-left: 10px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	color: #671476;
+}
+
+.circle {
+	border-radius: 50%;
+	background-color: black;
+	height: 200px;
+	width: 200px;
+}
