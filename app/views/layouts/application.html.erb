@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+  	<meta charset="UTF-8">
+    <title>Tcc</title>
+    <%= csrf_meta_tags %>
+
+    <script src="assets/jquery.js"></script>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <script src="assets/bootstrap.js"></script>
+  </head>
+
+  <body class="container">
+    <%= yield %>
+  </body>
+</html>

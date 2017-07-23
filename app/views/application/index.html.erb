@@ -1,0 +1,346 @@
+<div id="url_modal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="modal_header"></h4>
+      </div>
+      <div class="modal-body">
+        <p id="modal_body_info"></p>
+        <p id="modal_body_content"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" id="main_row">
+	<header class="text-center" id ="main_title">
+		<h3>Classificação dos políticos</h3>
+	</header>
+
+	<nav class="col-xs-2" id="nav_items">
+		<h4 data-title="Políticos">Políticos (<%= @items.count %>)</h4>
+		<input type="text" class="form-control" onkeyup="filter(this)" id="input_items">
+
+		<dl id="dl_items">
+			<% previous_tag = nil %>
+
+			<% @items.each_with_index do |item, ind| %>
+				<% if previous_tag != item.tag %>
+					<dt class="text-center"><%= item.tag %></dt>
+				<% end %>
+				
+				<dd data-item="<%= item.id %>" class="filter-text">
+					<%= item.text %>
+				</dd>
+
+				<% previous_tag = item.tag %>
+			<% end %>
+		</dl>
+	</nav>
+
+	<nav class="col-xs-4" id="nav_graph">
+		<h4 data-title="Termos Principais">Termos Principais</h4>
+		<input type="text" class="form-control" onkeyup="filter(this)" id="input_graph">
+
+		<dl id="dl_graph">
+		</dl>
+	</nav>
+
+	<nav class="col-xs-2" id="nav_terms">
+		<h4 data-title="Termos">Termos</h4>
+		<input type="text" class="form-control" onkeyup="filter(this)" id="input_terms">
+
+		<dl id="dl_terms">
+		</dl>
+	</nav>
+
+	<nav class="col-xs-4" id="nav_urls">
+		<h4 data-title="Urls">Urls</h4>
+		<input type="text" class="form-control" onkeyup="filter(this)" id="input_urls">
+
+		<dl id="dl_urls">
+		</dl>
+	</nav>
+</div>
+<hr>
+
+<script type="text/javascript">
+	window.el_last_item_cliked = null;
+	window.el_last_term_cliked = null;
+	window.el_last_main_cliked = null;
+
+	window.dl_items = document.getElementById('dl_items');
+	window.dl_terms = document.getElementById('dl_terms');
+	window.dl_urls  = document.getElementById('dl_urls');
+	window.dl_graph = document.getElementById('dl_graph');
+
+	window.input_items = document.getElementById('input_items');
+	window.input_terms = document.getElementById('input_terms');
+	window.input_urls  = document.getElementById('input_urls');
+	window.input_graph = document.getElementById('input_graph');
+
+	window.modal_header       = document.getElementById('modal_header');
+	window.modal_body_info    = document.getElementById('modal_body_info');
+	window.modal_body_content = document.getElementById('modal_body_content');
+
+	function item_onclick(ev) {
+		if (window.el_last_item_cliked !== ev.target) {
+			if (window.el_last_item_cliked) {
+				window.el_last_item_cliked.classList.remove('selected-elem');
+			}
+
+			ev.target.classList.add('selected-elem');
+
+			window.el_last_item_cliked = ev.target;
+
+			window.dl_terms.innerHTML = '';
+			window.dl_urls.innerHTML  = '';
+			window.dl_graph.innerHTML = '';
+
+			loadTerms(window.el_last_item_cliked.dataset.item);
+			loadMainTerms(window.el_last_item_cliked.dataset.item);
+			filter(window.input_urls);
+		}
+	}
+
+	function term_onclick(ev) {
+		if (window.el_last_main_cliked) {
+			window.el_last_main_cliked.style.color = '';
+			window.el_last_main_cliked = null;
+		}
+
+		if (window.el_last_term_cliked !== ev.target) {
+			if (window.el_last_term_cliked) {
+				window.el_last_term_cliked.classList.remove('selected-elem');
+			}
+
+			ev.target.classList.add('selected-elem');
+
+			window.el_last_term_cliked = ev.target;
+			window.dl_urls.innerHTML   = '';
+
+			loadUrls(
+				window.el_last_item_cliked.dataset.item,
+				window.el_last_term_cliked.dataset.term
+			);
+		}
+	}
+
+	function main_term_onclick(ev) {
+		if (window.el_last_term_cliked) {
+			window.el_last_term_cliked.classList.remove('selected-elem');
+			window.el_last_term_cliked = null;
+		}
+
+		if (window.el_last_main_cliked !== ev.target) {
+			if (window.el_last_main_cliked) {
+				window.el_last_main_cliked.classList.remove('selected-main-term');
+			}
+
+			window.el_last_main_cliked = ev.target
+			window.dl_urls.innerHTML   = '';
+
+			window.el_last_main_cliked.classList.add('selected-main-term');
+
+			loadUrls(
+				window.el_last_item_cliked.dataset.item,
+				window.el_last_main_cliked.dataset.term
+			);
+		}
+	}
+
+	function url_onclick(ev) {
+		loadUrl(ev.target.dataset.url_id);
+	}
+
+	function loadUrl(url_id) {
+		var xhttp = new XMLHttpRequest();
+
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var url = JSON.parse(this.responseText);
+				var a   = document.createElement('a');
+
+				a.href      = url.url;
+				a.innerHTML = 'Acesso em ' + (new Date(url.date)).toISOString().substr(0, 10).split('-').reverse().join('/');
+				a.target    = '_blank';
+
+				window.modal_header.innerHTML = url.title;
+				window.modal_body_info.innerHTML = '';
+				window.modal_body_info.appendChild(a);
+				window.modal_body_content.innerHTML = url.text;
+			}
+		};
+
+		xhttp.open('GET', 'url?url_id='+url_id, true);
+		xhttp.send();
+	}
+
+	document.querySelectorAll('nav dd').forEach(function(el, i) {
+	  el.onclick = window.item_onclick;
+	});
+
+	function loadTerms(item) {
+		var xhttp = new XMLHttpRequest();
+
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var terms    = JSON.parse(this.responseText);
+				var length   = terms.length;
+
+				window.dl_terms.innerHTML = '';
+
+				for (var i = 0; i < length; ++i) {
+					var term = terms[i];
+					var dd   = document.createElement('dd');
+
+					dd.dataset.term = term[0];
+					dd.innerHTML    = term[1] + ' ' + term[2];
+					dd.onclick      = term_onclick;
+					dd.className    = 'filter-text';
+
+					window.dl_terms.appendChild(dd);
+				}
+
+				filter(window.input_terms);
+				filter(window.input_graph);
+
+				//window.dl_terms.scrollTo(0, 0);
+			}
+		};
+
+		xhttp.open('GET', 'item_terms?item='+item, true);
+		xhttp.send();
+	}
+
+	function loadUrls(item, term) {
+		var xhttp = new XMLHttpRequest();
+
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var urls    = JSON.parse(this.responseText);
+				var length  = urls.length;
+
+				for (var i = 0; i < length; ++i) {
+					var url = urls[i];
+					var dd  = document.createElement('dd');
+					var a   = document.createElement('a');
+
+					a.innerHTML      = url[1];
+					a.className      = 'filter-text';
+					a.role           = 'button';
+					a.dataset.url_id = url[0];
+					a.dataset.toggle = 'modal';
+					a.dataset.target = '#url_modal';
+					a.onclick        = url_onclick;
+
+					dd.append('> ');
+					dd.appendChild(a);
+					//dd.appendChild(document.createElement('hr'));
+					window.dl_urls.appendChild(dd);
+				}
+
+				filter(window.input_urls);
+
+				//window.dl_urls.scrollTo(0, 0);
+			}
+		};
+
+		xhttp.open('GET', 'item_term_urls?item='+item+'&term='+term, true);
+		xhttp.send();
+	}
+
+	function loadMainTerms(item) {
+		var xhttp = new XMLHttpRequest();
+
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var response = JSON.parse(this.responseText);
+				var terms    = response.terms;
+				var length   = terms.length;
+
+				nabas = response;
+
+				for (var i = 0; i < length; ++i) {
+					var term         = terms[i];
+					var label        = document.createElement('label');
+					var dd           = document.createElement('dd');
+					var progress     = document.createElement('div');
+					var progress_bar = document.createElement('div');
+					var percent      = ((term[1][0] * 100) / response.sum).toFixed(2).toString() + '%';
+
+					progress.className       = 'progress'
+					progress_bar.className   = 'progress-bar progress-bar-' + (term[1][1] ? 'success' : 'danger');
+					progress_bar.style.width = percent;
+
+					progress_bar.setAttribute('role', 'progressbar');
+					progress_bar.setAttribute('aria-valuenow', '80');
+					progress_bar.setAttribute('aria-valuemin', '0');
+					progress_bar.setAttribute('aria-valuemax', '100');
+
+					label.innerHTML    = term[1][0] + ' ' + term[0] + ' (' + percent + ')';
+					label.onclick      = main_term_onclick;
+					label.dataset.term = term[0];
+					label.className    = 'filter-text';
+
+					dd.appendChild(label);
+					dd.appendChild(progress);
+					progress.appendChild(progress_bar);
+					window.dl_graph.appendChild(dd);
+				}
+
+				filter(window.input_graph);
+
+				//window.dl_graph.scrollTo(0, 0);
+			}
+		};
+
+		xhttp.open('GET', 'item_main_terms?item='+item, true);
+		xhttp.send();
+	}
+
+	function filter(el) {
+		var text        = el.value.toUpperCase();
+		var text_elems  = el.nextElementSibling.querySelectorAll('.filter-text');
+		var title_el    = el.previousElementSibling;
+		var qtd_visible = text_elems.length;
+
+		for (var i = text_elems.length - 1; i >= 0; i--) {
+			var elem    = text_elems[i];
+			var display = elem.innerHTML.toUpperCase().indexOf(text) !== -1 ? '' : 'none';
+
+			if (display !== '') {
+				qtd_visible--;
+			}
+
+			if (elem.tagName === 'LABEL' || elem.tagName === 'A') {
+				elem.parentElement.style.display = display;
+			}
+			else {
+				elem.style.display = display;
+			}
+		}
+
+		if (text_elems.length > 0) {
+			title_el.innerHTML = title_el.dataset.title + ' (' + qtd_visible + ')';
+		}
+		else {
+			title_el.innerHTML = title_el.dataset.title;
+		}
+	}
+
+	document.body.onresize = function() {
+		var height = (window.innerHeight - 180) + 'px';
+
+		window.dl_items.style.height = height;
+		window.dl_terms.style.height = height;
+		window.dl_urls.style.height  = height;
+		window.dl_graph.style.height = height;
+	}
+
+	document.body.onresize();
+</script>

@@ -1,0 +1,147 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+@font-face {
+	font-family: ubuntuL;
+	src: url('Ubuntu-L.ttf');
+}
+
+@font-face {
+	font-family: ubuntuM;
+	src: url('Ubuntu-M.ttf');
+}
+
+* {
+	font-family: ubuntuL !important;
+}
+
+body {
+	/*background-color: #f0f0f0;*/
+}
+
+a:hover {
+	cursor: pointer;
+}
+
+.container {
+	padding: 0px !important;
+}
+
+#main_title {
+	background-color: #dd4814;
+	color: white !important;
+}
+
+#main_title > h3 {
+	padding-bottom: 10px;
+	padding-top: 10px;
+	font-family: ubuntuM !important;
+}
+
+#nav_urls {
+	border-right: 1px solid #dd4814 !important;
+}
+
+#nav_urls dd {
+	line-height: 1.3;
+	margin-bottom: 14px;
+	font-family: ubuntuM !important;
+}
+
+#nav_urls dd a {
+	font-family: ubuntuL !important;
+}
+
+nav {
+	border: 1px solid #dd4814;
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+	top: -10px;
+	padding-left: 2px !important;
+	padding-right: 6px !important;
+}
+
+nav h4 {
+	border: 1px solid #dd4814;
+	position: relative;
+	padding: 7px;
+	border-left: none;
+	border-right: none;
+	border-top: none;
+	margin-left: 5px;
+	font-family: ubuntuM !important;
+}
+
+input {
+	height: 30px !important;
+	margin-left: 3px;
+}
+
+dl {
+	position: relative;
+	overflow-y: auto;
+	margin-top: 3px;
+	margin-bottom: 0px;
+}
+
+dt {
+	background-color: #dd4814;
+	position: relative;
+	padding-left: 2px;
+	display: block;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	font-family: ubuntuM !important;
+	color: white !important;
+	line-height: 1.8;
+}
+
+dd {
+	margin-left: 5px;
+	position: relative;
+	line-height: 1.8;
+}
+
+dd:hover {
+	cursor: default;
+}
+
+hr {
+	margin: 0px !important;
+	border-color: #dd4814;
+}
+
+.selected-elem {
+	border: 1px solid #dd4814;
+	border-left: none;
+	border-right: none;
+	left: -6px;
+	position: relative;
+	padding-left: 10px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	color: #3538F5;
+	font-family: ubuntuM !important;
+}
+
+.selected-main-term {
+	color: #3538F5;
+	font-family: ubuntuM !important;
+}
+
+.progress {
+	margin-bottom: 5px !important;
+}
